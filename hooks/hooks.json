@@ -1,0 +1,21 @@
+{
+  "description": "Activates the token-efficiency routing protocol with minimal session overhead.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact|fork",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"${PLUGIN_ROOT}/hooks/session-start.sh\"",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& \\\"$env:PLUGIN_ROOT\\hooks\\session-start.ps1\\\"\"",
+            "additionalContextLimit": 180,
+            "timeout": 5,
+            "statusMessage": "Activating token-efficient routing"
+          }
+        ]
+      }
+    ]
+  }
+}
+

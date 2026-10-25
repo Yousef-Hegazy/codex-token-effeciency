@@ -1,0 +1,21 @@
+{
+  "name": "codex-token-effeciency",
+  "interface": {
+    "displayName": "Codex Token Efficiency"
+  },
+  "plugins": [
+    {
+      "name": "codex-token-effeciency",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
+

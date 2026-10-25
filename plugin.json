@@ -1,0 +1,36 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "codex-token-effeciency",
+  "version": "1.0.0",
+  "description": "Reduce Codex token usage with selective low-cost delegation and strict anti-overhead rules.",
+  "author": {
+    "name": "Yousef Hegazy",
+    "url": "https://github.com/Yousef-Hegazy"
+  },
+  "homepage": "https://github.com/Yousef-Hegazy/codex-token-effeciency",
+  "repository": "https://github.com/Yousef-Hegazy/codex-token-effeciency.git",
+  "license": "MIT",
+  "keywords": ["codex", "tokens", "delegation", "subagents", "productivity"],
+  "extensions": {
+    "com.openai": {
+      "hooks": "./hooks/hooks.json",
+      "onboardingSkill": "./skills/setup/SKILL.md",
+      "interface": {
+        "displayName": "Codex Token Efficiency",
+        "shortDescription": "Spend fewer tokens by delegating only when it pays.",
+        "longDescription": "A Codex-specific routing protocol for low-cost codebase search and bounded edits, with safeguards against wasteful subagent spawning.",
+        "developerName": "Yousef Hegazy",
+        "category": "Productivity",
+        "capabilities": ["Read", "Write"],
+        "websiteURL": "https://github.com/Yousef-Hegazy/codex-token-effeciency",
+        "defaultPrompt": [
+          "Use balanced token-efficiency routing for this task.",
+          "Use economy mode and avoid agents unless they clearly save total tokens.",
+          "Explain the token-efficiency route chosen for this task."
+        ],
+        "brandColor": "#10A37F"
+      }
+    }
+  }
+}
+
