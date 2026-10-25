@@ -8,7 +8,7 @@
           {
             "type": "command",
             "command": "sh \"${PLUGIN_ROOT}/hooks/session-start.sh\"",
-            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& \\\"$env:PLUGIN_ROOT\\hooks\\session-start.ps1\\\"\"",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& ([System.IO.Path]::Combine([Environment]::GetEnvironmentVariable('PLUGIN_ROOT'), 'hooks', 'session-start.ps1'))\"",
             "additionalContextLimit": 180,
             "timeout": 5,
             "statusMessage": "Activating token-efficient routing"

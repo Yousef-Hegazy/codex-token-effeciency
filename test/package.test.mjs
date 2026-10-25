@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -43,18 +51,23 @@ test("session hook covers every root-session entry point with bounded context", 
   assert.match(entries[0].hooks[0].commandWindows, /session-start\.ps1/);
 });
 
-test("PowerShell activation hook emits compact valid JSON", () => {
-  const output = execFileSync(
-    "powershell.exe",
-    [
-      "-NoProfile",
-      "-ExecutionPolicy",
-      "Bypass",
-      "-File",
-      join(root, "hooks", "session-start.ps1"),
-    ],
-    { encoding: "utf8" },
-  );
+test("platform activation hook emits compact valid JSON", () => {
+  const output =
+    process.platform === "win32"
+      ? execFileSync(
+          "powershell.exe",
+          [
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            join(root, "hooks", "session-start.ps1"),
+          ],
+          { encoding: "utf8" },
+        )
+      : execFileSync("sh", [join(root, "hooks", "session-start.sh")], {
+          encoding: "utf8",
+        });
   const payload = JSON.parse(output);
   const context = payload.hookSpecificOutput.additionalContext;
 
@@ -63,6 +76,36 @@ test("PowerShell activation hook emits compact valid JSON", () => {
   assert.match(context, /delegat/i);
   assert.ok(context.split(/\s+/).length <= 120);
 });
+
+test(
+  "configured Windows hook command works when the plugin path contains spaces",
+  { skip: process.platform !== "win32" },
+  () => {
+    const temporaryRoot = mkdtempSync(join(tmpdir(), "codex plugin "));
+    const temporaryHooks = join(temporaryRoot, "hooks");
+    mkdirSync(temporaryHooks);
+    for (const file of ["session-start.ps1"]) {
+      copyFileSync(join(root, "hooks", file), join(temporaryHooks, file));
+    }
+
+    try {
+      const config = readJson("hooks/hooks.json");
+      const command = config.hooks.SessionStart[0].hooks[0].commandWindows;
+      const output = execFileSync(
+        "powershell.exe",
+        ["-NoProfile", "-Command", command],
+        {
+          encoding: "utf8",
+          env: { ...process.env, PLUGIN_ROOT: temporaryRoot },
+        },
+      );
+      const payload = JSON.parse(output);
+      assert.equal(payload.hookSpecificOutput.hookEventName, "SessionStart");
+    } finally {
+      rmSync(temporaryRoot, { recursive: true, force: true });
+    }
+  },
+);
 
 test("plugin contains both skills and every routed reference", () => {
   const required = [
@@ -119,5 +162,11 @@ test("README documents installation, hook trust, modes, and removal", () => {
   assert.match(readme, /maximum-quality/i);
   assert.match(readme, /no-agents/i);
   assert.match(readme, /uninstall|remove/i);
+});
+
+test("evaluation report labels measured token savings as unverified", () => {
+  const report = readFileSync(join(root, "evals", "results.md"), "utf8");
+
+  assert.match(report, /token savings[^\n]*unverified/i);
 });
 

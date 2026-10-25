@@ -24,5 +24,5 @@ Five fresh strong-primary routing samples evaluated that clarified case. All fiv
 - Workers assigned to trivial edits or direct symbol lookups: 0 after the skill
 - Clarified model-fallback micro-test: 5/5 expected routes
 
-Exact account token totals were not exposed to the evaluator. Results therefore use routing decisions, context-transfer constraints, retry count, output limits, and cleanup risk as the documented proxies from `scorecard.md`.
+**Measured token savings status: unverified.** Exact account token totals were not exposed, and the evaluation did not execute matched end-to-end implementation tasks. The results demonstrate improved routing consistency and bounded context behavior; they do not yet prove a reduction in total successful-task tokens. A future benchmark must run identical completed tasks with and without the plugin and record prompt tokens, output tokens, retries, cleanup, and task success.
 

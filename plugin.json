@@ -9,7 +9,6 @@
   },
   "homepage": "https://github.com/Yousef-Hegazy/codex-token-effeciency",
   "repository": "https://github.com/Yousef-Hegazy/codex-token-effeciency.git",
-  "license": "MIT",
   "keywords": ["codex", "tokens", "delegation", "subagents", "productivity"],
   "extensions": {
     "com.openai": {

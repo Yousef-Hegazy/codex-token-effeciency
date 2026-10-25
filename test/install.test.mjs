@@ -19,7 +19,10 @@ const shellRoot =
         .replaceAll("\\", "/")
     : root;
 
-test("PowerShell installer dry-run registers the GitHub marketplace", () => {
+test(
+  "PowerShell installer dry-run registers the GitHub marketplace",
+  { skip: process.platform !== "win32" },
+  () => {
   const output = execFileSync(
     "powershell.exe",
     [
@@ -35,9 +38,17 @@ test("PowerShell installer dry-run registers the GitHub marketplace", () => {
 
   assert.match(output, new RegExp(`codex plugin marketplace add ${marketplace}`));
   assert.match(output, /\/plugins/);
-});
+  },
+);
 
-test("POSIX installer dry-run registers the GitHub marketplace", () => {
+test(
+  "POSIX installer dry-run registers the GitHub marketplace",
+  {
+    skip:
+      process.platform === "win32" &&
+      !existsSync("C:\\Program Files\\Git\\bin\\sh.exe"),
+  },
+  () => {
   const output = execFileSync(
     shell,
     [`${shellRoot}/install/install.sh`, "--dry-run"],
@@ -46,5 +57,6 @@ test("POSIX installer dry-run registers the GitHub marketplace", () => {
 
   assert.match(output, new RegExp(`codex plugin marketplace add ${marketplace}`));
   assert.match(output, /\/plugins/);
-});
+  },
+);
 

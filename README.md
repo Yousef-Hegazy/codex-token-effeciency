@@ -1,6 +1,6 @@
 # Codex Token Efficiency
 
-A Codex-specific plugin that reduces total token use by delegating only when a cheaper worker is likely to save more context than it consumes.
+A Codex-specific plugin designed to reduce total token use by delegating only when a cheaper worker is likely to save more context than it consumes.
 
 It provides two narrowly defined worker routes:
 
@@ -101,7 +101,7 @@ One worker is the default. Two are permitted only for genuinely independent broa
 
 The preferred worker is the cheapest available code-capable model at low reasoning. `gpt-6-luna` is preferred when available; otherwise Codex selects the nearest lower-cost capable model exposed by the host. The plugin does not fail when a named model is unavailable.
 
-## Why this saves tokens
+## Why this can save tokens
 
 The protocol counts the whole task rather than one model call:
 
@@ -163,9 +163,10 @@ test/                               Dependency-free Node.js tests
 - Lifecycle hooks run only where Codex has local execution access.
 - Users must explicitly trust the hook; installation alone does not enable it.
 - Exact per-agent token accounting depends on what the current Codex host exposes. When unavailable, the scorecard uses prompt size, output size, duplicate reads, retries, and cleanup as proxies.
+- Measured token savings are currently unverified; the included evaluation demonstrates routing consistency, not a completed-task token benchmark.
 - This plugin guides Codex routing. It cannot override higher-priority system, administrator, user, or repository policies.
 
-## License
+## Copyright
 
-MIT
+Copyright © 2026 Yousef Hegazy. All rights reserved. No open-source license is granted. Redistribution, resale, or commercial use requires the author's written permission.
 
