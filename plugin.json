@@ -13,7 +13,6 @@
   "extensions": {
     "com.openai": {
       "hooks": "./hooks/hooks.json",
-      "onboardingSkill": "./skills/setup/SKILL.md",
       "interface": {
         "displayName": "Codex Token Efficiency",
         "shortDescription": "Spend fewer tokens by delegating only when it pays.",

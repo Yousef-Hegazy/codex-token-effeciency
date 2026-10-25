@@ -1,23 +1,38 @@
 ---
 name: token-efficient-orchestration
-description: Use when Codex is deciding whether to delegate codebase search or a small or medium code edit, especially when minimizing total token use matters.
+description: Use when Codex is deciding whether to delegate codebase search or a small or medium code edit and total token use matters.
 ---
 
 # Token-Efficient Orchestration
 
-Minimize total tokens required for a successful task, including worker prompts, worker outputs, review, retries, and cleanup. A cheaper turn that causes rework is not efficient.
+Minimize total successful-task tokens, including worker prompts, transferred context, worker output, review, retries, and cleanup.
 
-## Route work
+## Stay with the primary agent
 
-1. Honor explicit user and repository instructions.
-2. Apply the hard vetoes in [routing-policy.md](references/routing-policy.md).
-3. If no veto applies, compare direct work with the search and edit thresholds.
-4. Delegate only when the saved primary-agent work clearly exceeds spawn, context-transfer, output, and review overhead.
-5. Emit one routing note: `route=<primary|search|edit> mode=<mode> reason=<short-code>`.
+Do the work directly when any of these apply:
 
-Use `balanced` unless the user selected another mode. Read [tuning.md](references/tuning.md) only when a mode or threshold must be changed.
+- One obvious edit, one direct lookup, or about three tool calls or fewer.
+- The next step depends immediately on this result.
+- The primary already has the relevant files and context.
+- Requirements are ambiguous or the worker would need most of the conversation.
+- The task involves architecture, public APIs, authentication, authorization, secrets, payments, privacy, schemas, migrations, destructive actions, or final verification.
+- A delegated attempt already failed or expanded scope.
 
-Before spawning, use the minimal prompt and output contract in [delegation-contracts.md](references/delegation-contracts.md). Do not pass the full conversation by default.
+## Use a search agent
 
-The primary agent owns architecture, sensitive work, conflict resolution, final verification, and the final answer. One failed delegated verification escalates to the primary agent; do not recursively replace the worker unless materially new evidence changes the task.
+Spawn one cheap code-capable agent with low reasoning when discovery is read-only and broad across several directories, or will likely require more than four searches. Two search agents are allowed only for genuinely independent questions.
+
+Ask for file paths, symbols, dependency edges, and evidence only. Do not ask the search agent to design or edit.
+
+## Use an edit agent
+
+Spawn one cheap code-capable agent with low reasoning only when the change is low-risk, reversible, independently verifiable, limited to five named files, and roughly 250 changed lines or fewer.
+
+Give it only the objective, allowed files, constraints, exact verification check, and required output. Stop and return to the primary agent if scope expands, sensitive code appears, requirements conflict, or verification fails once.
+
+Prefer `gpt-6-luna` when available; otherwise use the cheapest available capable model. If no meaningfully cheaper capable model exists, stay primary unless broad parallel search still clearly saves work.
+
+Default to `balanced`. Honor explicit `economy`, `maximum-quality`, and `no-agents` requests. User and repository instructions always override this skill.
+
+When useful, report the decision in one line: `route=<primary|search|edit> mode=<mode> reason=<short-code>`.
 

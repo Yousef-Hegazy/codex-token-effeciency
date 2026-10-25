@@ -1,4 +1,4 @@
 #!/bin/sh
 
-printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Apply the token-efficient-orchestration protocol before spawning any subagent. Default to balanced mode. Do trivial, dependent, ambiguous, high-risk, and final-verification work in the primary agent. Load the detailed routing policy only when delegation is genuinely under consideration. Explicit user and repository instructions override this protocol."}}'
+printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Apply token-efficient-orchestration before spawning subagents. Default to balanced. Keep trivial, dependent, ambiguous, sensitive, destructive, architectural, and final-verification work primary. User and repository instructions override."}}'
 
